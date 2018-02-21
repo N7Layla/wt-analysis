@@ -106,11 +106,15 @@
                 fetch('https://willowtreeapps.com/api/v1.0/profiles')
                 .then(response => {
                     if (response.status !== 200) {
-                        reject(new Error("Error!"));
+                        reject(new Error('Error!'));
                     }
 
                     response.json().then(imageList => {
-                        resolve(imageList);
+                        resolve(imageList.filter(image => {
+                            return image.headshot.url}));
+                        /* Add filter to only return results with a headshot
+                            Could implement some form of placeholder instead
+                            if all results are desired. */
                     });
                 });
             });
@@ -164,7 +168,7 @@
          */
         function filterByName(searchForName, personList) {
             return personList.filter((person) => {
-                return person.firstName === searchForName || person.lastName === searchForName;
+                return person.firstName.toLowerCase() === searchForName.toLowerCase() || person.lastName.toLowerCase() === searchForName.toLowerCase();
             });
         }
 
@@ -207,8 +211,10 @@
         }
 
         const sortByFirstName = sortObjListByProp('firstName');
-
-        const sortByLastName = (personList) => sortByFirstName(personList).reverse();
+        const sortByLastName = sortObjListByProp('lastName')
+        /*(personList) => sortByFirstName(personList).reverse();
+         Sort by last name function was in fact reversing previous
+         firstName sort rather than sorting by last name
 
 
         /*==================================================
@@ -288,7 +294,7 @@
 
                 return React.DOM.div({ className: 'app-container' }, [
                     React.createElement(Search, { key: 'search', onChange: this._onSearch }),
-                    React.DOM.button({ key: 'shuffle', onClick: this._shuffleList }, null, 'Shuffle'),
+                    React.DOM.button({ key: 'shuffle', onClick: this._shuffleList, value: 'shuff'}, null, 'Shuffle'),
                     React.DOM.button({ key: 'sort-first', onClick: this._sortByFirst }, null, 'Sort (First Name)'),
                     React.DOM.button({ key: 'sort-last', onClick: this._sortByLast }, null, 'Sort (Last Name)'),
                     React.createElement(ListContainer, { key: 'list', personList: visiblePersonList })
